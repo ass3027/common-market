@@ -33,9 +33,9 @@ class ProductService(private val productRepository: ProductRepository) {
     }
 
     @Transactional
-    fun updateProduct(id: Long, productUpdateReq: ProductDTO.UpdateReq): ProductDTO.Res {
-        val product = productRepository.findById(id).orElseThrow {
-            IllegalArgumentException("Product not found with id: $id")
+    fun updateProduct(productUpdateReq: ProductDTO.UpdateReq): ProductDTO.Res {
+        val product = productRepository.findById(productUpdateReq.id).orElseThrow {
+            IllegalArgumentException("Product not found with id: ${productUpdateReq.id}")
         }
 
         productUpdateReq.name?.let { product.name = it }

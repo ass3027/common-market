@@ -10,8 +10,19 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/product")
 class ProductController(private val productService: ProductService) {
+
+//    init {
+//        val productReq = ProductDTO.Req(
+//            name = "Test Product",
+//            price = 10000L,
+//            sellerId = 99L,
+//            imageUrl = "http://example.com/image.jpg",
+//            content = "This is a test product description."
+//        )
+//        productService.createProduct(productReq)
+//    }
 
     @GetMapping
     fun getProducts(@PageableDefault(size = 10, sort = ["id"]) pageable: Pageable): ResponseEntity<Page<ProductDTO.Res>> {
@@ -31,9 +42,9 @@ class ProductController(private val productService: ProductService) {
         return ResponseEntity(createdProduct, HttpStatus.CREATED)
     }
 
-    @PutMapping("/{productId}")
-    fun updateProduct(@PathVariable productId: Long, @RequestBody productUpdateReq: ProductDTO.UpdateReq): ResponseEntity<ProductDTO.Res> {
-        val updatedProduct = productService.updateProduct(productId, productUpdateReq)
+    @PutMapping
+    fun updateProduct(@RequestBody productUpdateReq: ProductDTO.UpdateReq): ResponseEntity<ProductDTO.Res> {
+        val updatedProduct = productService.updateProduct(productUpdateReq)
         return ResponseEntity.ok(updatedProduct)
     }
 

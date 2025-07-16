@@ -5,11 +5,14 @@ import com.helpme.commonmarket.product.entity.Product
 
 fun Product.toResDTO(): ProductDTO.Res {
     return ProductDTO.Res(
-        id = this.id,
+        id = this.id!!,
         name = this.name,
         price = this.price,
         sellerId = this.sellerId,
-        imageUrl = this.imageUrl
+        imageUrl = this.imageUrl,
+        content = this.content,
+        createDt = this.createDt,
+        updateDt = this.updateDt
     )
 }
 
@@ -18,6 +21,7 @@ fun ProductDTO.Req.toEntity(): Product {
         name = this.name,
         price = this.price,
         sellerId = this.sellerId,
-        imageUrl = this.imageUrl
+        imageUrl = this.imageUrl,
+        content = this.content
     )
 }
