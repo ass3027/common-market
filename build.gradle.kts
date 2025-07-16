@@ -31,7 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.1")
     runtimeOnly("com.mysql:mysql-connector-j")
-    runtimeOnly("com.h2database:h2")
+    testRuntimeOnly("com.h2database:h2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")

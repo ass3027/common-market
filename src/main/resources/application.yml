@@ -2,9 +2,15 @@ spring:
   application:
     name: common-market
   datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password: 
+    url: jdbc:mysql://localhost:3306/common_market # Connects to the MySQL Service in Kubernetes
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC Driver
+    username: root # Matches the username in your Kubernetes Secret
+    password: wkit3031! # Matches the password in your Kubernetes Secret
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect # Hibernate dialect for MySQL 8
+    hibernate:
+      ddl-auto: update # Options: none, update, create, create-drop. Use 'update' for development.
+    show-sql: true # Optional: Shows SQL queries in logs
+    properties:
+      hibernate:
+        format_sql: true # Optional: Formats SQL queries in logs

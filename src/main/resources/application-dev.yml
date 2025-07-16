@@ -1,0 +1,4 @@
+logging:
+  level:
+    org.hibernate.SQL: DEBUG # Log all SQL statements
+    org.hibernate.type.descriptor.sql: TRACE # Log SQL parameters (bind values)

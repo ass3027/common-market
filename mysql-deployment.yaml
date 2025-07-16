@@ -1,0 +1,97 @@
+# This YAML file defines the Kubernetes objects required to deploy a MySQL database instance.
+# It includes a Secret for sensitive data, a PersistentVolumeClaim for persistent storage,
+# a Deployment to manage the MySQL Pod, and a Service to expose the database within the cluster.
+
+# ---
+# 1. Secret (kind: Secret)
+# Purpose: Secrets are used to store sensitive information like passwords securely.
+#          Storing sensitive data directly in Pod definitions is insecure.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret # Name of this Secret object. Other objects will refer to this name.
+type: Opaque # A general-purpose Secret type.
+stringData:
+  # Replace 'your_strong_password' with a strong, unique password.
+  # Kubernetes will automatically base64 encode this value when storing it.
+  MYSQL_ROOT_PASSWORD: wkit3031!
+---
+# 2. PersistentVolumeClaim (kind: PersistentVolumeClaim)
+# Purpose: A PVC is a request for persistent storage. It abstracts away the underlying
+#          storage infrastructure, ensuring data is not lost if the Pod restarts or moves.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc # Name of this PersistentVolumeClaim.
+spec:
+  accessModes:
+    # ReadWriteOnce: The volume can be mounted as read-write by a single node.
+    # This is typically suitable for a single-instance database.
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi # Request 5 GB of storage. Adjust this value as needed for your database.
+---
+# 3. Deployment (kind: Deployment)
+# Purpose: A Deployment manages a set of identical Pods. It ensures a specified number
+#          of replica Pods are running and handles declarative updates.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment # Name of this Deployment.
+  labels:
+    app: mysql # Labels applied to the Deployment and its Pods.
+spec:
+  selector:
+    matchLabels:
+      app: mysql # The Deployment manages Pods with this label.
+  strategy:
+    # Recreate: Terminates all old Pods before creating new ones.
+    # For a single-replica database, this is often preferred to prevent data corruption.
+    type: Recreate
+  template: # This is the Pod template used by the Deployment to create new Pods.
+    metadata:
+      labels:
+        app: mysql # Labels applied to the Pods created by this Deployment.
+    spec:
+      containers:
+        - name: mysql # Name of the container.
+          image: mysql:8.0 # Docker image to use (official MySQL 8.0). You can specify a different version.
+          env:
+            # MYSQL_ROOT_PASSWORD: Environment variable for MySQL root password.
+            # Its value is pulled from the 'mysql-secret' Secret.
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret # Refers to the Secret object defined above.
+                  key: MYSQL_ROOT_PASSWORD # Refers to the key within the Secret.
+          ports:
+            - containerPort: 3306 # Default MySQL port exposed inside the container.
+              name: mysql # Named port for easier reference in the Service.
+          volumeMounts:
+            - name: mysql-persistent-storage # Refers to the volume defined below.
+              mountPath: /var/lib/mysql # Standard path inside the MySQL container for data.
+      volumes: # Defines the volumes that can be mounted into the containers.
+        - name: mysql-persistent-storage # Name of the volume, referenced by volumeMounts.
+          persistentVolumeClaim:
+            claimName: mysql-pvc # Links this volume to the PersistentVolumeClaim defined above.
+---
+# 4. Service (kind: Service)
+# Purpose: A Service defines a logical set of Pods and a policy to access them.
+#          It provides a stable IP and DNS name for accessing MySQL.
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service # Name of this Service.
+spec:
+  selector:
+    app: mysql # Routes traffic to Pods with the label 'app: mysql'.
+  ports:
+    - protocol: TCP # Network protocol.
+      port: 3306 # The port on which the Service itself will listen.
+      targetPort: mysql # The named port on the Pods (containers) to which the Service will forward traffic.
+  # ClusterIP: Exposes the service only within the Kubernetes cluster.
+  # Other Pods can connect using the DNS name 'mysql-service'.
+  # Use NodePort or LoadBalancer for external access if needed.
+  # type: ClusterIP
+  type: LoadBalancer
