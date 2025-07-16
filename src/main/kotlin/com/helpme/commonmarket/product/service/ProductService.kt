@@ -25,14 +25,12 @@ class ProductService(private val productRepository: ProductRepository) {
         return productRepository.findAll(pageable).map { it.toResDTO() }
     }
 
-    @Transactional
     fun createProduct(productReq: ProductDTO.Req): ProductDTO.Res {
         val product = productReq.toEntity()
         val savedProduct = productRepository.save(product)
         return savedProduct.toResDTO()
     }
 
-    @Transactional
     fun updateProduct(productUpdateReq: ProductDTO.UpdateReq): ProductDTO.Res {
         val product = productRepository.findById(productUpdateReq.id).orElseThrow {
             IllegalArgumentException("Product not found with id: ${productUpdateReq.id}")
@@ -47,7 +45,6 @@ class ProductService(private val productRepository: ProductRepository) {
         return updatedProduct.toResDTO()
     }
 
-    @Transactional
     fun deleteProduct(id: Long) {
         if (!productRepository.existsById(id)) {
             throw IllegalArgumentException("Product not found with id: $id")
