@@ -19,19 +19,18 @@ class JacksonConfig {
     @Primary
     fun objectMapper(): ObjectMapper {
         val objectMapper = ObjectMapper()
-        objectMapper.registerKotlinModule()
         val javaTimeModule = JavaTimeModule()
 
-        // Configure LocalDateTime serialization
-        val localDateTimeSerializer = LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        javaTimeModule.addSerializer(LocalDateTime::class.java, localDateTimeSerializer)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val localDateTimeSerializer = LocalDateTimeSerializer(formatter)
+        val localDateTimeDeserializer = LocalDateTimeDeserializer(formatter)
 
-        // Configure LocalDateTime deserialization
-        val localDateTimeDeserializer = LocalDateTimeDeserializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        javaTimeModule.addSerializer(LocalDateTime::class.java, localDateTimeSerializer)
         javaTimeModule.addDeserializer(LocalDateTime::class.java, localDateTimeDeserializer)
 
         objectMapper.registerModule(javaTimeModule)
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+        objectMapper.registerKotlinModule()
         return objectMapper
     }
 }
