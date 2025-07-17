@@ -24,24 +24,31 @@ repositories {
     mavenCentral()
 }
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.1")
-    runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    runtimeOnly("com.mysql:mysql-connector-j")
     compileOnly("org.projectlombok:lombok")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("net.datafaker:datafaker:2.4.4")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.13.11")
-    testCompileOnly("org.mockito:mockito-inline:+")
+    testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("io.mockk:mockk:1.13.11")
+
+    testImplementation("org.mockito:mockito-core")
+    mockitoAgent("org.mockito:mockito-core") { isTransitive = false }
 }
 
 kotlin {
@@ -51,5 +58,10 @@ kotlin {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    useJUnitPlatform {
+        if (!project.hasProperty("includeDataGeneration")) {
+            excludeTags("data-generation")
+        }
+    }
 }

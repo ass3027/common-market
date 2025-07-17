@@ -7,10 +7,12 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import org.junit.jupiter.api.Tag
 
-@SpringBootTest
+@SpringBootTest(properties = ["spring.test.database.replace=none"])
 @ActiveProfiles("dev")
-class DataInitializer {
+@Tag("data-generation")
+class FakeDataInitializer {
 
     @Autowired
     private lateinit var productRepository: ProductRepository
