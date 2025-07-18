@@ -4,6 +4,7 @@ import com.helpme.commonmarket.product.dto.ProductDTO
 import com.helpme.commonmarket.product.mapper.toEntity
 import com.helpme.commonmarket.product.mapper.toResDTO
 import com.helpme.commonmarket.product.repository.ProductRepository
+import com.helpme.commonmarket.product.specs.ProductSpecification
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -21,8 +22,13 @@ class ProductService(private val productRepository: ProductRepository) {
     }
 
     @Transactional(readOnly = true)
-    fun getProducts(pageable: Pageable): Page<ProductDTO.Res> {
-        return productRepository.findAll(pageable).map { it.toResDTO() }
+    fun getProducts(filter: Map<String, String>?, pageable: Pageable): Page<ProductDTO.Res> {
+        return if (filter.isNullOrEmpty()) {
+            productRepository.findAll(pageable).map { it.toResDTO() }
+        } else {
+            val spec = ProductSpecification.byFilter(filter)
+            productRepository.findAll(spec, pageable).map { it.toResDTO() }
+        }
     }
 
     fun createProduct(productReq: ProductDTO.Req): ProductDTO.Res {

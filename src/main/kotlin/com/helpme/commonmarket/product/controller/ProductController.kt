@@ -13,20 +13,12 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/product")
 class ProductController(private val productService: ProductService) {
 
-//    init {
-//        val productReq = ProductDTO.Req(
-//            name = "Test Product",
-//            price = 10000L,
-//            sellerId = 99L,
-//            imageUrl = "http://example.com/image.jpg",
-//            content = "This is a test product description."
-//        )
-//        productService.createProduct(productReq)
-//    }
-
     @GetMapping
-    fun getProducts(@PageableDefault(size = 10, sort = ["id"]) pageable: Pageable): ResponseEntity<Page<ProductDTO.Res>> {
-        val products = productService.getProducts(pageable)
+    fun getProducts(
+        @RequestParam(required = false) filter: Map<String, String>?,
+        @PageableDefault(size = 10, sort = ["id"]) pageable: Pageable
+    ): ResponseEntity<Page<ProductDTO.Res>> {
+        val products = productService.getProducts(filter, pageable)
         return ResponseEntity.ok(products)
     }
 
