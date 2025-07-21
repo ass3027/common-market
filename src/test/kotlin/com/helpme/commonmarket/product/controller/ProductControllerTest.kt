@@ -57,7 +57,7 @@ class ProductControllerTest @Autowired constructor(
         val pageable = PageRequest.of(0, 10)
         val productPage = PageImpl(listOf(dummyProductRes), pageable, 1)
 
-        every { productService.getProducts(any()) } returns productPage
+        every { productService.getProducts(any(), any()) } returns productPage
 
         mockMvc.perform(get("/api/v1/product"))
             .andDo(MockMvcResultHandlers.print())
@@ -67,7 +67,7 @@ class ProductControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.content[0].createDt").value(fixedDateTime.format(formatter)))
             .andExpect(jsonPath("$.content[0].updateDt").value(fixedDateTime.format(formatter)))
 
-        verify(exactly = 1) { productService.getProducts(any()) }
+        verify(exactly = 1) { productService.getProducts(any(), any()) }
     }
 
     @Test

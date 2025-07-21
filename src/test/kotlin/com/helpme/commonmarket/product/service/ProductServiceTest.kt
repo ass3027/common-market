@@ -71,7 +71,7 @@ class ProductServiceTest {
         every { productRepository.findAll(pageable) } returns productPage
 
         // When
-        val result = productService.getProducts(pageable)
+        val result = productService.getProducts(null, pageable)
 
         // Then
         assertEquals(1, result.totalElements)
