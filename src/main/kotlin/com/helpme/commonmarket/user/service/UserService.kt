@@ -3,7 +3,6 @@ package com.helpme.commonmarket.user.service
 import com.helpme.commonmarket.user.dto.UserDto
 import com.helpme.commonmarket.user.mapper.toDto
 import com.helpme.commonmarket.user.mapper.toEntity
-import com.helpme.commonmarket.user.mapper.toEntity as updateToEntity
 import com.helpme.commonmarket.user.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

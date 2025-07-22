@@ -19,6 +19,9 @@ class User(
     @Column(nullable = false)
     var password: String,
 
+    @Column(nullable = false)
+    var role: String = "USER",
+
     @Column(name = "create_dt", nullable = false, updatable = false)
     val createDt: LocalDateTime = LocalDateTime.now(),
 

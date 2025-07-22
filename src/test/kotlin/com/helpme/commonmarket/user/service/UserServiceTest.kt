@@ -29,6 +29,7 @@ class UserServiceTest {
         name = "Test User",
         email = "test@example.com",
         password = passwordEncoder.encode("password"),
+        role = "USER",
         createDt = LocalDateTime.now(),
         updateDt = LocalDateTime.now()
     )
@@ -82,7 +83,15 @@ class UserServiceTest {
             password = rawPassword
         )
         val userToSave = userReq.toEntity()
-        val savedUser = userToSave.copy(id = 2L, password = encodedPassword, createDt = LocalDateTime.now(), updateDt = LocalDateTime.now())
+        val savedUser = User(
+            id = 2L,
+            name = userToSave.name,
+            email = userToSave.email,
+            password = encodedPassword,
+            role = "USER",
+            createDt = LocalDateTime.now(),
+            updateDt = LocalDateTime.now()
+        )
 
         every { userRepository.save(any<User>()) } returns savedUser
         every { passwordEncoder.encode(rawPassword) } returns encodedPassword
@@ -105,10 +114,13 @@ class UserServiceTest {
             email = "updated@example.com",
             password = rawPassword
         )
-        val updatedUserEntity = dummyUser.copy(
+        val updatedUserEntity = User(
+            id = dummyUser.id,
             name = userUpdateReq.name!!,
             email = userUpdateReq.email!!,
             password = encodedPassword,
+            role = dummyUser.role,
+            createDt = dummyUser.createDt,
             updateDt = LocalDateTime.now().plusMinutes(1)
         )
 

@@ -50,7 +50,7 @@ class UserControllerTest @Autowired constructor(
     )
 
     @Test
-    fun `GET /users should return a page of users`() {
+    fun `GET users should return a page of users`() {
         val pageable = PageRequest.of(0, 10)
         val userPage = PageImpl(listOf(dummyUserRes), pageable, 1)
 
@@ -68,7 +68,7 @@ class UserControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `GET /users/{userId} should return a single user`() {
+    fun `GET users by userId should return a single user`() {
         every { userService.getUserById(1L) } returns dummyUserRes
 
         mockMvc.perform(get("/users/1"))
@@ -83,7 +83,7 @@ class UserControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `POST /users should create a new user`() {
+    fun `POST users should create a new user`() {
         val userReq = UserDto.Req(
             name = "New User",
             email = "new@example.com",

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -29,18 +30,21 @@ class ProductController(private val productService: ProductService) {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     fun createProduct(@RequestBody productReq: ProductDTO.Req): ResponseEntity<ProductDTO.Res> {
         val createdProduct = productService.createProduct(productReq)
         return ResponseEntity(createdProduct, HttpStatus.CREATED)
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     fun updateProduct(@RequestBody productUpdateReq: ProductDTO.UpdateReq): ResponseEntity<ProductDTO.Res> {
         val updatedProduct = productService.updateProduct(productUpdateReq)
         return ResponseEntity.ok(updatedProduct)
     }
 
     @DeleteMapping("/{productId}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun deleteProduct(@PathVariable productId: Long): ResponseEntity<Void> {
         productService.deleteProduct(productId)
         return ResponseEntity.noContent().build()

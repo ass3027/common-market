@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
@@ -86,6 +87,7 @@ class ProductControllerTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = ["ADMIN"])
     fun `POST api v1 products는 새로운 상품을 생성해야 한다`() {
         val productReq = ProductDTO.Req(
             name = "New Product",
@@ -111,6 +113,7 @@ class ProductControllerTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = ["ADMIN"])
     fun `PUT api v1 products productId는 상품을 업데이트해야 한다`() {
         val productUpdateReq = ProductDTO.UpdateReq(
             id = 1L,
@@ -137,6 +140,7 @@ class ProductControllerTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = ["ADMIN"])
     fun `DELETE api v1 products productId는 상품을 삭제해야 한다`() {
         every { productService.deleteProduct(1L) } returns Unit
 
@@ -145,5 +149,40 @@ class ProductControllerTest @Autowired constructor(
             .andExpect(status().isNoContent)
 
         verify(exactly = 1) { productService.deleteProduct(1L) }
+    }
+
+    @Test
+    fun `POST api v1 products는 인증없이 호출시 401을 반환해야 한다`() {
+        val productReq = ProductDTO.Req(
+            name = "New Product",
+            price = 20000L,
+            sellerId = 2L,
+            imageUrl = "http://example.com/new.jpg",
+            content = "New product description."
+        )
+
+        mockMvc.perform(post("/api/v1/product")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(productReq)))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    @WithMockUser(roles = ["USER"])
+    fun `POST api v1 products는 USER 권한으로 호출시 403을 반환해야 한다`() {
+        val productReq = ProductDTO.Req(
+            name = "New Product",
+            price = 20000L,
+            sellerId = 2L,
+            imageUrl = "http://example.com/new.jpg",
+            content = "New product description."
+        )
+
+        mockMvc.perform(post("/api/v1/product")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(productReq)))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isForbidden)
     }
 }
