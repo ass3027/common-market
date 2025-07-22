@@ -128,6 +128,28 @@ com.helpme.commonmarket/
 - **Test Data**: Using DataFaker for realistic test data
 - **Coverage**: Comprehensive testing of CRUD operations and error cases
 
+### Test Philosophy
+**Focus on behavior and outcomes, not implementation details:**
+
+**DO TEST:**
+- **Behavior**: "Does the system do what users expect?"
+- **State**: "Is the system in the correct state after the operation?"
+- **Contracts**: "Are the inputs/outputs correct?"
+- **Side effects**: External API calls, security operations, resource management
+
+**AVOID TESTING:**
+- Method call counts for pure functions (getters, utility methods)
+- Internal implementation details that users don't care about
+- Value extractions and transformations (focus on final results)
+
+**Example:**
+```kotlin
+// Instead of: verify(exactly = 1) { jwtTokenUtil.getUsernameFromToken(token) }
+// Do: assertEquals("expectedUsername", actualResult.username)
+```
+
+Tests should break when functionality breaks, not when implementation changes.
+
 ## Development Notes
 
 ### Security Integration
