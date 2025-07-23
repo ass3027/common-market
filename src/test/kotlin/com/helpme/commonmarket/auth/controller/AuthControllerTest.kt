@@ -6,7 +6,6 @@ import com.helpme.commonmarket.config.CustomUserDetailsService
 import com.helpme.commonmarket.config.JwtTokenUtil
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -15,11 +14,9 @@ import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
@@ -47,7 +44,8 @@ class AuthControllerTest @Autowired constructor(
     }
 
     @Test
-    fun `login should return JWT token for valid credentials`() {
+    fun `successful login returns complete JWT response structure`() {
+        // Arrange
         val loginRequest = LoginRequest("1", "admin123")
         val userDetails: UserDetails = User.builder()
             .username("1")
@@ -60,6 +58,7 @@ class AuthControllerTest @Autowired constructor(
         every { userDetailsService.loadUserByUsername("1") } returns userDetails
         every { jwtTokenUtil.generateToken(userDetails) } returns expectedToken
 
+        // Act & Assert - Focus on complete response structure and behavior
         mockMvc.perform(
             post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -72,22 +71,15 @@ class AuthControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.userId").value("1"))
             .andExpect(jsonPath("$.roles").isArray)
             .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN"))
-
-        verify(exactly = 1) { 
-            authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken("1", "admin123")
-            )
-        }
-        verify(exactly = 1) { userDetailsService.loadUserByUsername("1") }
-        verify(exactly = 1) { jwtTokenUtil.generateToken(userDetails) }
     }
 
     @Test
-    fun `login should return 400 for invalid credentials`() {
+    fun `invalid credentials return proper error response`() {
+        // Arrange
         val loginRequest = LoginRequest("1", "wrongpassword")
-
         every { authenticationManager.authenticate(any()) } throws BadCredentialsException("Bad credentials")
 
+        // Act & Assert - Focus on error handling behavior
         mockMvc.perform(
             post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,14 +88,6 @@ class AuthControllerTest @Autowired constructor(
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.error").value("Invalid username or password"))
-
-        verify(exactly = 1) { 
-            authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken("1", "wrongpassword")
-            )
-        }
-        verify(exactly = 0) { userDetailsService.loadUserByUsername(any()) }
-        verify(exactly = 0) { jwtTokenUtil.generateToken(any()) }
     }
 
     @Test

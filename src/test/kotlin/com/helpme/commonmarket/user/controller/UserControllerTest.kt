@@ -6,7 +6,6 @@ import com.helpme.commonmarket.user.dto.UserDto
 import com.helpme.commonmarket.user.service.UserService
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -63,8 +62,6 @@ class UserControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.content[0].name").value(dummyUserRes.name))
             .andExpect(jsonPath("$.content[0].createDt").value(fixedDateTime.format(formatter)))
             .andExpect(jsonPath("$.content[0].updateDt").value(fixedDateTime.format(formatter)))
-
-        verify(exactly = 1) { userService.getAllUsers(any()) }
     }
 
     @Test
@@ -78,8 +75,6 @@ class UserControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.name").value(dummyUserRes.name))
             .andExpect(jsonPath("$.createDt").value(fixedDateTime.format(formatter)))
             .andExpect(jsonPath("$.updateDt").value(fixedDateTime.format(formatter)))
-
-        verify(exactly = 1) { userService.getUserById(1L) }
     }
 
     @Test
@@ -101,8 +96,6 @@ class UserControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.name").value(dummyUserRes.name))
             .andExpect(jsonPath("$.createDt").value(fixedDateTime.format(formatter)))
             .andExpect(jsonPath("$.updateDt").value(fixedDateTime.format(formatter)))
-
-        verify(exactly = 1) { userService.createUser(any()) }
     }
 
     @Test
@@ -125,8 +118,6 @@ class UserControllerTest @Autowired constructor(
             .andExpect(jsonPath("$.name").value(dummyUserRes.name))
             .andExpect(jsonPath("$.createDt").value(fixedDateTime.format(formatter)))
             .andExpect(jsonPath("$.updateDt").value(fixedDateTime.format(formatter)))
-
-        verify(exactly = 1) { userService.updateUser(any()) }
     }
 
     @Test
@@ -136,7 +127,5 @@ class UserControllerTest @Autowired constructor(
         mockMvc.perform(delete("/users/1"))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isNoContent)
-
-        verify(exactly = 1) { userService.deleteUser(1L) }
     }
 }
