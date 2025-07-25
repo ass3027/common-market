@@ -34,7 +34,7 @@ class UserControllerTest @Autowired constructor(
         fun userService() = mockk<UserService>()
 
         @Bean
-        fun objectMapper() = JacksonConfig().objectMapper()
+        fun objectMapper() = JacksonConfig().jackson2ObjectMapperBuilderCustomizer()
     }
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

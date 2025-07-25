@@ -2,8 +2,6 @@ package com.helpme.commonmarket.product.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.helpme.commonmarket.config.JacksonConfig
-import com.helpme.commonmarket.config.JwtTokenUtil
-import com.helpme.commonmarket.config.CustomUserDetailsService
 import com.helpme.commonmarket.product.dto.ProductDTO
 import com.helpme.commonmarket.product.service.ProductService
 import io.mockk.every
@@ -36,7 +34,7 @@ class ProductControllerTest @Autowired constructor(
         fun productService() = mockk<ProductService>(relaxed = true)
 
         @Bean
-        fun objectMapper() = JacksonConfig().objectMapper()
+        fun objectMapper() = JacksonConfig().jackson2ObjectMapperBuilderCustomizer()
         
     }
 
