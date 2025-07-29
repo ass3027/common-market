@@ -35,7 +35,7 @@ class ProductControllerTest @Autowired constructor(
 
         @Bean
         fun objectMapper() = JacksonConfig().jackson2ObjectMapperBuilderCustomizer()
-        
+
     }
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

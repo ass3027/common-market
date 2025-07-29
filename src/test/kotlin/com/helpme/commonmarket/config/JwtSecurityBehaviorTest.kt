@@ -204,7 +204,7 @@ class JwtSecurityBehaviorTest {
         
         val regularUser = User(
             id = "test2",
-            name = "Regular User", 
+            name = "Regular User",
             email = "user@test.com",
             password = passwordEncoder.encode("user123"),
             role = "USER"
