@@ -36,7 +36,8 @@ class ProductControllerTest @Autowired constructor(
         fun productService() = mockk<ProductService>()
 
         @Bean
-        fun objectMapper() = JacksonConfig().objectMapper()
+        fun objectMapper() = JacksonConfig().jackson2ObjectMapperBuilderCustomizer()
+        
     }
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
