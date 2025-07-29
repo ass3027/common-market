@@ -17,7 +17,7 @@ class UserService(
 ) {
 
     @Transactional(readOnly = true)
-    fun getUserById(id: Long): UserDto.Res {
+    fun getUserById(id: String): UserDto.Res {
         val user = userRepository.findById(id).orElseThrow {
             IllegalArgumentException("User not found with id: $id")
         }
@@ -49,7 +49,7 @@ class UserService(
         return updatedUser.toDto()
     }
 
-    fun deleteUser(id: Long) {
+    fun deleteUser(id: String) {
         if (!userRepository.existsById(id)) {
             throw IllegalArgumentException("User not found with id: $id")
         }

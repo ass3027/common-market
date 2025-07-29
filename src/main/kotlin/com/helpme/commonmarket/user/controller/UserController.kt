@@ -20,7 +20,7 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/{userId}")
-    fun getUserById(@PathVariable userId: Long): ResponseEntity<UserDto.Res> {
+    fun getUserById(@PathVariable userId: String): ResponseEntity<UserDto.Res> {
         val user = userService.getUserById(userId)
         return ResponseEntity.ok(user)
     }
@@ -38,7 +38,7 @@ class UserController(private val userService: UserService) {
     }
 
     @DeleteMapping("/{userId}")
-    fun deleteUser(@PathVariable userId: Long): ResponseEntity<Void> {
+    fun deleteUser(@PathVariable userId: String): ResponseEntity<Void> {
         userService.deleteUser(userId)
         return ResponseEntity.noContent().build()
     }

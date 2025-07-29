@@ -14,11 +14,7 @@ class CustomUserDetailsService(
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val userId = try {
-            username.toLong()
-        } catch (e: NumberFormatException) {
-            throw UsernameNotFoundException("Invalid user ID format: $username")
-        }
+        val userId = username
 
         val user = userRepository.findById(userId).orElseThrow {
             UsernameNotFoundException("User not found with id: $userId")
@@ -27,7 +23,7 @@ class CustomUserDetailsService(
         val authorities = listOf(SimpleGrantedAuthority("ROLE_${user.role}"))
 
         return User.builder()
-            .username(user.id.toString())
+            .username(user.id)
             .password(user.password)
             .authorities(authorities)
             .build()

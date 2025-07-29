@@ -14,9 +14,9 @@ class DataInitializer(
 
     override fun run(vararg args: String?) {
         // Create test users only if they don't exist
-        if (!userRepository.existsById(1L)) {
+        if (!userRepository.existsById("1")) {
             val admin = User(
-                id = 0,
+                id = "1",
                 name = "Admin User",
                 email = "admin@example.com", 
                 password = passwordEncoder.encode("admin123"),
@@ -26,9 +26,9 @@ class DataInitializer(
             println("Created admin user - ID: 1, Password: admin123")
         }
 
-        if (!userRepository.existsById(2L)) {
+        if (!userRepository.existsById("2")) {
             val user = User(
-                id = 0,
+                id = "2",
                 name = "Regular User",
                 email = "user@example.com",
                 password = passwordEncoder.encode("user123"), 

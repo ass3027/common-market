@@ -7,13 +7,11 @@ import com.helpme.commonmarket.user.mapper.toEntity
 import com.helpme.commonmarket.user.repository.UserRepository
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 import java.util.Optional
@@ -21,14 +19,14 @@ import java.util.Optional
 class UserServiceTest {
 
     private val userRepository: UserRepository = mockk()
-    private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
+    private val passwordEncoder: PasswordEncoder = mockk()
     private val userService = UserService(userRepository, passwordEncoder)
 
     private val dummyUser = User(
-        id = 1L,
+        id = "1",
         name = "Test User",
         email = "test@example.com",
-        password = passwordEncoder.encode("password"),
+        password = "encoded_password",
         role = "USER",
         createDt = LocalDateTime.now(),
         updateDt = LocalDateTime.now()
@@ -38,9 +36,9 @@ class UserServiceTest {
 
     @Test
     fun `getUserById should return a user when found`() {
-        every { userRepository.findById(1L) } returns Optional.of(dummyUser)
+        every { userRepository.findById("1") } returns Optional.of(dummyUser)
 
-        val result = userService.getUserById(1L)
+        val result = userService.getUserById("1")
 
         assertEquals(dummyUserRes, result)
         verify(exactly = 1) { userRepository.findById(1L) }
@@ -51,7 +49,7 @@ class UserServiceTest {
         every { userRepository.findById(any()) } returns Optional.empty()
 
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            userService.getUserById(99L)
+            userService.getUserById("99")
         }
         assertEquals("User not found with id: 99", exception.message)
         verify(exactly = 1) { userRepository.findById(99L) }
@@ -75,7 +73,7 @@ class UserServiceTest {
     @Test
     fun `createUser should create a new user`() {
         val rawPassword = "new_password"
-        val encodedPassword = passwordEncoder.encode(rawPassword)
+        val encodedPassword = "encoded_new_password"
 
         val userReq = UserDto.Req(
             name = "New User",
@@ -93,8 +91,8 @@ class UserServiceTest {
             updateDt = LocalDateTime.now()
         )
 
-        every { userRepository.save(any<User>()) } returns savedUser
         every { passwordEncoder.encode(rawPassword) } returns encodedPassword
+        every { userRepository.save(any<User>()) } returns savedUser
 
         val result = userService.createUser(userReq)
 
@@ -106,10 +104,10 @@ class UserServiceTest {
     @Test
     fun `updateUser should update an existing user`() {
         val rawPassword = "updated_password"
-        val encodedPassword = passwordEncoder.encode(rawPassword)
+        val encodedPassword = "encoded_updated_password"
 
         val userUpdateReq = UserDto.UpdateReq(
-            id = 1L,
+            id = "1",
             name = "Updated User",
             email = "updated@example.com",
             password = rawPassword
@@ -124,9 +122,9 @@ class UserServiceTest {
             updateDt = LocalDateTime.now().plusMinutes(1)
         )
 
-        every { userRepository.findById(1L) } returns Optional.of(dummyUser)
-        every { userRepository.save(any<User>()) } returns updatedUserEntity
         every { passwordEncoder.encode(rawPassword) } returns encodedPassword
+        every { userRepository.findById("1") } returns Optional.of(dummyUser)
+        every { userRepository.save(any<User>()) } returns updatedUserEntity
 
         val result = userService.updateUser(userUpdateReq)
 
@@ -138,10 +136,10 @@ class UserServiceTest {
 
     @Test
     fun `deleteUser should delete an existing user`() {
-        every { userRepository.existsById(1L) } returns true
-        every { userRepository.deleteById(1L) } returns Unit
+        every { userRepository.existsById("1") } returns true
+        every { userRepository.deleteById("1") } returns Unit
 
-        userService.deleteUser(1L)
+        userService.deleteUser("1")
 
         verify(exactly = 1) { userRepository.existsById(1L) }
         verify(exactly = 1) { userRepository.deleteById(1L) }

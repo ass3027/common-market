@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 class UserDto {
     data class Res(
-        val id: Long,
+        val id: String,
         val name: String,
         val email: String,
         val createDt: LocalDateTime,
@@ -18,7 +18,7 @@ class UserDto {
     )
 
     data class UpdateReq(
-        val id: Long,
+        val id: String,
         val name: String?,
         val email: String?,
         val password: String?

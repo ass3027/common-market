@@ -7,8 +7,7 @@ import java.time.LocalDateTime
 @Table(name = "users")
 class User(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
+    val id: String = "",
 
     @Column(nullable = false)
     var name: String,

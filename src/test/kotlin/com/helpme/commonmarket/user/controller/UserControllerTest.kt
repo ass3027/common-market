@@ -35,14 +35,14 @@ class UserControllerTest @Autowired constructor(
         fun userService() = mockk<UserService>()
 
         @Bean
-        fun objectMapper() = JacksonConfig().objectMapper()
+        fun objectMapper() = JacksonConfig().jackson2ObjectMapperBuilderCustomizer()
     }
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     private val fixedDateTime = LocalDateTime.of(2023, 1, 15, 10, 30, 0)
 
     private val dummyUserRes = UserDto.Res(
-        id = 1L,
+        id = "1",
         name = "Test User",
         email = "test@example.com",
         createDt = fixedDateTime,
@@ -69,7 +69,7 @@ class UserControllerTest @Autowired constructor(
 
     @Test
     fun `GET users by userId should return a single user`() {
-        every { userService.getUserById(1L) } returns dummyUserRes
+        every { userService.getUserById("1") } returns dummyUserRes
 
         mockMvc.perform(get("/users/1"))
             .andDo(MockMvcResultHandlers.print())
@@ -108,7 +108,7 @@ class UserControllerTest @Autowired constructor(
     @Test
     fun `PUT users should update an existing user`() {
         val userUpdateReq = UserDto.UpdateReq(
-            id = 1L,
+            id = "1",
             name = "Updated User",
             email = "updated@example.com",
             password = "new_password"
@@ -131,7 +131,7 @@ class UserControllerTest @Autowired constructor(
 
     @Test
     fun `DELETE users userId는 기존 사용자를 삭제해야 한다`() {
-        every { userService.deleteUser(1L) } returns Unit
+        every { userService.deleteUser("1") } returns Unit
 
         mockMvc.perform(delete("/users/1"))
             .andDo(MockMvcResultHandlers.print())
