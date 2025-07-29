@@ -37,7 +37,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    runtimeOnly("com.mysql:mysql-connector-j")
+//    runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("com.h2database:h2")
     compileOnly("org.projectlombok:lombok")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
