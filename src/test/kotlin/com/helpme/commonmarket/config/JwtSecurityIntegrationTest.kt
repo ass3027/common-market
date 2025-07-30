@@ -52,7 +52,7 @@ class JwtSecurityIntegrationTest {
 
         // Create test users
         val adminUser = User(
-            id = 0,
+            id = "0",
             name = "Admin User",
             email = "admin@test.com",
             password = passwordEncoder.encode("admin123"),
@@ -60,7 +60,7 @@ class JwtSecurityIntegrationTest {
         )
         
         val regularUser = User(
-            id = 0,
+            id = "1",
             name = "Regular User", 
             email = "user@test.com",
             password = passwordEncoder.encode("user123"),

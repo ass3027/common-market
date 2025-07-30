@@ -80,6 +80,7 @@ class UserControllerTest @Autowired constructor(
     @Test
     fun `POST users should create a new user`() {
         val userReq = UserDto.Req(
+            id = "1",
             name = "New User",
             email = "new@example.com",
             password = "password"

@@ -16,6 +16,7 @@ fun User.toDto(): UserDto.Res {
 
 fun UserDto.Req.toEntity(): User {
     return User(
+        id = this.id,
         name = this.name,
         email = this.email,
         password = this.password,

@@ -73,6 +73,7 @@ class UserServiceTest {
         val encodedPassword = "encoded_new_password"
 
         val userReq = UserDto.Req(
+            id = "1",
             name = "New User",
             email = "new@example.com",
             password = rawPassword
