@@ -30,10 +30,10 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     // Public endpoints
-                    .requestMatchers(HttpMethod.GET, "/api/v1/product/**").permitAll()
                     .requestMatchers("/actuator/health").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                    
+                    .requestMatchers(HttpMethod.GET, "/api/v1/product/**").permitAll()
+
                     // Admin endpoints
                     .requestMatchers(HttpMethod.POST, "/api/v1/product/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/api/v1/product/**").hasRole("ADMIN")
@@ -47,11 +47,11 @@ class SecurityConfig(
             .build()
     }
 
-    @Bean
-    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
-        //TODO 이해하기
-        return authConfig.authenticationManager
-    }
+//    @Bean
+//    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
+//        //TODO 이해하기
+//        return authConfig.authenticationManager
+//    }
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {

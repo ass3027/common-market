@@ -14,7 +14,6 @@ object ProductSpecification {
                 when (key) {
                     "name", "content" -> predicates.add(builder.like(root.get(key), "%$value%"))
                     "price", "sellerId" -> predicates.add(builder.equal(root.get<Long>(key), value.toLongOrNull()))
-                    // Add more cases for other fields if needed
                 }
             }
             builder.and(*predicates.toTypedArray())
