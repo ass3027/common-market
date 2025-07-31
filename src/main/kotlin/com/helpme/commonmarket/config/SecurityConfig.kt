@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -47,11 +48,13 @@ class SecurityConfig(
             .build()
     }
 
-//    @Bean
-//    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
-//        //TODO 이해하기
-//        return authConfig.authenticationManager
-//    }
+    @Bean
+    fun authenticationManager(authConfig: AuthenticationConfiguration): AuthenticationManager {
+        //TODO 이해하기
+//        JwtAuthenticationProvider
+        return authConfig.authenticationManager
+    }
+
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
