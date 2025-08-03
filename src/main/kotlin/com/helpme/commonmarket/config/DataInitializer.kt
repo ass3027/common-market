@@ -13,7 +13,6 @@ class DataInitializer(
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
-        // Create test users only if they don't exist
         if (!userRepository.existsById("1")) {
             val admin = User(
                 id = "1",

@@ -22,15 +22,12 @@ class JacksonConfig {
         
         return Jackson2ObjectMapperBuilderCustomizer {
             it.apply {
-                // Configure LocalDateTime serialization/deserialization
                 serializerByType(LocalDateTime::class.java, LocalDateTimeSerializer(dateTimeFormatter))
                 deserializerByType(LocalDateTime::class.java, LocalDateTimeDeserializer(dateTimeFormatter))
-                
-                // Configure LocalDate serialization/deserialization
+
                 serializerByType(LocalDate::class.java, LocalDateSerializer(dateFormatter))
                 deserializerByType(LocalDate::class.java, LocalDateDeserializer(dateFormatter))
-                
-                // Add Kotlin module for better Kotlin support
+
                 modules(KotlinModule.Builder().build())
             }
         }
