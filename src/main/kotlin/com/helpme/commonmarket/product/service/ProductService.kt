@@ -5,6 +5,9 @@ import com.helpme.commonmarket.product.mapper.toEntity
 import com.helpme.commonmarket.product.mapper.toResDTO
 import com.helpme.commonmarket.product.repository.ProductRepository
 import com.helpme.commonmarket.product.specs.ProductSpecification
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProductService(private val productRepository: ProductRepository) {
 
+    @Cacheable(value = ["products"], key = "#id")
     @Transactional(readOnly = true)
     fun getProduct(id: Long): ProductDTO.Res {
         val product = productRepository.findById(id).orElseThrow {
@@ -31,12 +35,17 @@ class ProductService(private val productRepository: ProductRepository) {
         }
     }
 
+    @CacheEvict(value = ["productsList"], allEntries = true)
     fun createProduct(productReq: ProductDTO.Req): ProductDTO.Res {
         val product = productReq.toEntity()
         val savedProduct = productRepository.save(product)
         return savedProduct.toResDTO()
     }
 
+    @Caching(evict = [
+        CacheEvict(value = ["products"], key = "#productUpdateReq.id"),
+        CacheEvict(value = ["productsList"], allEntries = true)
+    ])
     fun updateProduct(productUpdateReq: ProductDTO.UpdateReq): ProductDTO.Res {
         val product = productRepository.findById(productUpdateReq.id).orElseThrow {
             IllegalArgumentException("Product not found with id: ${productUpdateReq.id}")
@@ -51,6 +60,10 @@ class ProductService(private val productRepository: ProductRepository) {
         return updatedProduct.toResDTO()
     }
 
+    @Caching(evict = [
+        CacheEvict(value = ["products"], key = "#id"),
+        CacheEvict(value = ["productsList"], allEntries = true)
+    ])
     fun deleteProduct(id: Long) {
         if (!productRepository.existsById(id)) {
             throw IllegalArgumentException("Product not found with id: $id")

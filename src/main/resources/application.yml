@@ -7,13 +7,22 @@ spring:
     username: root # Matches the username in your Kubernetes Secret
     password: wkit3031! # Matches the password in your Kubernetes Secret
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect # Hibernate dialect for MySQL 8
     hibernate:
       ddl-auto: update # Options: none, update, create, create-drop. Use 'update' for development.
     show-sql: true # Optional: Shows SQL queries in logs
     properties:
       hibernate:
         format_sql: true # Optional: Formats SQL queries in logs
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
 
 # JWT Configuration
 jwt:
